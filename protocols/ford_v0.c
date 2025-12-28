@@ -405,11 +405,12 @@ void subghz_protocol_decoder_ford_v0_get_string(void *context, FuriString *outpu
 
     furi_string_cat_printf(
         output,
-        "%s %dbit\r\n"
+        //"%s %dbit\r\n"  // REMOVE THIS LINE BC ITS THE SAME AS THE HEADER
         "Key1:%08lX%08lX\r\n"   //renamed key1
         "Key2:%04X\r\n"   //added key2
         "Sn:%08lX Btn:%02X:%s\r\n"
-        "Cnt:%06lX BS:%02X CRC:%02X\r\n",
+        "Cnt:%06lX BS:%02X\r\n"
+        "CRC:%02X\r\n",   //split the last line to have a better and clear view
         instance->generic.protocol_name,
         instance->generic.data_count_bit,
         code_found_hi,
