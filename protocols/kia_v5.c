@@ -340,8 +340,15 @@ kia_protocol_decoder_v5_deserialize(void *context, FlipperFormat *flipper_format
 {
     furi_assert(context);
     SubGhzProtocolDecoderKiaV5 *instance = context;
-    return subghz_block_generic_deserialize_check_count_bit(
-        &instance->generic, flipper_format, kia_protocol_v5_const.min_count_bit_for_found);
+    SubGhzProtocolStatus ret = subghz_block_generic_deserialize(&instance->generic, flipper_format);
+
+    if(ret == SubGhzProtocolStatusOk) {
+        if(instance->generic.data_count_bit < subghz_protocol_kia_v5_const.min_count_bit_for_found) {
+            ret = SubGhzProtocolStatusErrorParserBitCount;
+        }
+    }
+
+    return ret;
 }
 
 void kia_protocol_decoder_v5_get_string(void *context, FuriString *output)
