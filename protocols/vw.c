@@ -58,7 +58,7 @@ const SubGhzProtocolEncoder subghz_protocol_vw_encoder = {
 const SubGhzProtocol vw_protocol = {
     .name = VW_PROTOCOL_NAME,
     .type = SubGhzProtocolTypeDynamic,
-    .flag = SubGhzProtocolFlag_433 | SubGhzProtocolFlag_AM | SubGhzProtocolFlag_Decodable,
+    .flag = SubGhzProtocolFlag_433 | SubGhzProtocolFlag_AM | SubGhzProtocolFlag_FM | SubGhzProtocolFlag_Decodable,
     .decoder = &subghz_protocol_vw_decoder,
     .encoder = &subghz_protocol_vw_encoder,
 };
