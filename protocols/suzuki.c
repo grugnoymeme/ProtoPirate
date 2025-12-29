@@ -61,7 +61,8 @@ const SubGhzProtocolEncoder subghz_protocol_suzuki_encoder = {
 const SubGhzProtocol suzuki_protocol = {
     .name = SUZUKI_PROTOCOL_NAME,
     .type = SubGhzProtocolTypeDynamic,
-    .flag = SubGhzProtocolFlag_433 | SubGhzProtocolFlag_AM | SubGhzProtocolFlag_Decodable,
+    .flag = SubGhzProtocolFlag_315 | SubGhzProtocolFlag_433 | SubGhzProtocolFlag_AM | SubGhzProtocolFlag_FM | 
+            SubGhzProtocolFlag_Decodable,
     .decoder = &subghz_protocol_suzuki_decoder,
     .encoder = &subghz_protocol_suzuki_encoder,
 };
