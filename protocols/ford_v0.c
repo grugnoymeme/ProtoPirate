@@ -73,7 +73,8 @@ const SubGhzProtocolEncoder subghz_protocol_ford_v0_encoder = {
 const SubGhzProtocol ford_protocol_v0 = {
     .name = FORD_PROTOCOL_V0_NAME,
     .type = SubGhzProtocolTypeDynamic,
-    .flag = SubGhzProtocolFlag_433 | SubGhzProtocolFlag_FM | SubGhzProtocolFlag_Decodable,
+    .flag = SubGhzProtocolFlag_315 | SubGhzProtocolFlag_433 | SubGhzProtocolFlag_AM | SubGhzProtocolFlag_FM | 
+            SubGhzProtocolFlag_Decodable,
     .decoder = &subghz_protocol_ford_v0_decoder,
     .encoder = &subghz_protocol_ford_v0_encoder,
 };
