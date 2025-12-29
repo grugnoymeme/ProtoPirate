@@ -710,12 +710,20 @@ SubGhzProtocolStatus subghz_protocol_decoder_kia_serialize(
     return ret;
 }
 
-SubGhzProtocolStatus subghz_protocol_decoder_kia_deserialize(void *context, FlipperFormat *flipper_format)
-{
+SubGhzProtocolStatus
+    subghz_protocol_decoder_kia_deserialize(void* context, FlipperFormat* flipper_format) {
     furi_assert(context);
-    SubGhzProtocolDecoderKIA *instance = context;
-    return subghz_block_generic_deserialize_check_count_bit(
-        &instance->generic, flipper_format, subghz_protocol_kia_const.min_count_bit_for_found);
+    SubGhzProtocolDecoderKIA* instance = context;
+    
+    SubGhzProtocolStatus ret = subghz_block_generic_deserialize(&instance->generic, flipper_format);
+    
+    if(ret == SubGhzProtocolStatusOk) {
+        if(instance->generic.data_count_bit < subghz_protocol_kia_const.min_count_bit_for_found) {
+            ret = SubGhzProtocolStatusErrorParserBitCount;
+        }
+    }
+    
+    return ret;
 }
 
 void subghz_protocol_decoder_kia_get_string(void *context, FuriString *output)
