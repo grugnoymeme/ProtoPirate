@@ -56,7 +56,7 @@ const SubGhzProtocolEncoder kia_protocol_v2_encoder = {
 const SubGhzProtocol kia_protocol_v2 = {
     .name = KIA_PROTOCOL_V2_NAME,
     .type = SubGhzProtocolTypeDynamic,
-    .flag = SubGhzProtocolFlag_315 | SubGhzProtocolFlag_433 | SubGhzProtocolFlag_FM |
+    .flag = SubGhzProtocolFlag_315 | SubGhzProtocolFlag_433 | SubGhzProtocolFlag_AM | SubGhzProtocolFlag_FM |
             SubGhzProtocolFlag_Decodable,
     .decoder = &kia_protocol_v2_decoder,
     .encoder = &kia_protocol_v2_encoder,
@@ -320,12 +320,19 @@ SubGhzProtocolStatus kia_protocol_decoder_v2_serialize(
 }
 
 SubGhzProtocolStatus
-kia_protocol_decoder_v2_deserialize(void *context, FlipperFormat *flipper_format)
-{
+    subghz_protocol_decoder_kia_v2_deserialize(void* context, FlipperFormat* flipper_format) {
     furi_assert(context);
-    SubGhzProtocolDecoderKiaV2 *instance = context;
-    return subghz_block_generic_deserialize_check_count_bit(
-        &instance->generic, flipper_format, kia_protocol_v2_const.min_count_bit_for_found);
+    SubGhzProtocolDecoderKiaV2* instance = context;
+    
+    SubGhzProtocolStatus ret = subghz_block_generic_deserialize(&instance->generic, flipper_format);
+    
+    if(ret == SubGhzProtocolStatusOk) {
+        if(instance->generic.data_count_bit < subghz_protocol_kia_v2_const.min_count_bit_for_found) {
+            ret = SubGhzProtocolStatusErrorParserBitCount;
+        }
+    }
+    
+    return ret;
 }
 
 void kia_protocol_decoder_v2_get_string(void *context, FuriString *output)
