@@ -363,19 +363,35 @@ SubGhzProtocolStatus kia_protocol_decoder_v3_v4_serialize(
     return ret;
 }
 
-SubGhzProtocolStatus
-kia_protocol_decoder_v3_v4_deserialize(void *context, FlipperFormat *flipper_format)
-{
+SubGhzProtocolStatus kia_protocol_decoder_v3_v4_deserialize(void *context, FlipperFormat *flipper_format) {
     furi_assert(context);
     SubGhzProtocolDecoderKiaV3V4 *instance = context;
+    
     SubGhzProtocolStatus ret = subghz_block_generic_deserialize(&instance->generic, flipper_format);
 
     if(ret == SubGhzProtocolStatusOk) {
-        if(instance->generic.data_count_bit < subghz_protocol_kia_v3_v4_const.min_count_bit_for_found) {
+        if(instance->generic.data_count_bit < kia_protocol_v3_v4_const.min_count_bit_for_found) {
             ret = SubGhzProtocolStatusErrorParserBitCount;
         }
     }
-
+    
+    if(ret == SubGhzProtocolStatusOk) {
+        flipper_format_read_uint32(flipper_format, "Encrypted", &instance->encrypted, 1);
+        flipper_format_read_uint32(flipper_format, "Decrypted", &instance->decrypted, 1);
+        
+        uint32_t temp_version = 0;
+        if(flipper_format_read_uint32(flipper_format, "Version", &temp_version, 1)) {
+            instance->version = temp_version;
+        }
+        
+        // recalculate serial/btn/cnt from decrypted
+        if(instance->decrypted != 0) {
+            instance->generic.serial = (instance->decrypted >> 12) & 0xFFFFFFF;
+            instance->generic.btn = (instance->decrypted >> 8) & 0x0F;
+            instance->generic.cnt = instance->decrypted & 0xFF;
+        }
+    }
+    
     return ret;
 }
 
